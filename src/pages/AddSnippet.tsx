@@ -17,8 +17,9 @@ const AddSnippet = () => {
   const [language, setLanguage] = useState("");
   const [code, setCode] = useState("");
   const [tags, setTags] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!title || !language || !code) {
@@ -30,59 +31,66 @@ const AddSnippet = () => {
       return;
     }
 
+    setIsLoading(true);
+    
+    // Simular chamada à API do Gemini (2 segundos)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     toast({
       title: "Snippet salvo!",
-      description: "Seu snippet foi salvo e analisado pela IA.",
+      description: "Seu snippet foi analisado pela IA Gemini.",
     });
 
-    // Simular redirecionamento para a página de detalhes
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+    setIsLoading(false);
+    navigate("/");
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">Novo Snippet</h1>
-            <p className="text-muted-foreground">
-              Adicione seu código e a IA irá gerar uma explicação automática
+            <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Novo Snippet
+            </h1>
+            <p className="text-muted-foreground text-lg">
+              Adicione seu código e a IA irá gerar uma explicação automática ✨
             </p>
           </div>
 
-          <Card>
+          <Card className="glass-strong">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Sparkles className="h-6 w-6 text-primary" />
                 Detalhes do Snippet
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Preencha as informações do seu snippet de código
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="title">Título *</Label>
+                  <Label htmlFor="title" className="text-base">Título *</Label>
                   <Input
                     id="title"
                     placeholder="Ex: React useState Hook"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    disabled={isLoading}
+                    className="glass h-12"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="language">Linguagem *</Label>
-                  <Select value={language} onValueChange={setLanguage}>
-                    <SelectTrigger id="language">
+                  <Label htmlFor="language" className="text-base">Linguagem *</Label>
+                  <Select value={language} onValueChange={setLanguage} disabled={isLoading}>
+                    <SelectTrigger id="language" className="glass h-12">
                       <SelectValue placeholder="Selecione a linguagem" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="glass-strong">
                       <SelectItem value="JavaScript">JavaScript</SelectItem>
                       <SelectItem value="TypeScript">TypeScript</SelectItem>
                       <SelectItem value="Python">Python</SelectItem>
@@ -95,32 +103,40 @@ const AddSnippet = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="code">Código *</Label>
+                  <Label htmlFor="code" className="text-base">Código *</Label>
                   <Textarea
                     id="code"
                     placeholder="Cole seu código aqui..."
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    className="font-mono text-sm min-h-[300px] bg-code-bg"
+                    disabled={isLoading}
+                    className="font-mono text-sm min-h-[300px] bg-code-bg border-code-border"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="tags">Tags (opcional)</Label>
+                  <Label htmlFor="tags" className="text-base">Tags (opcional)</Label>
                   <Input
                     id="tags"
                     placeholder="react, hooks, state (separadas por vírgula)"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
+                    disabled={isLoading}
+                    className="glass h-12"
                   />
                   <p className="text-sm text-muted-foreground">
                     Separe as tags por vírgula
                   </p>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full gap-2">
-                  <Sparkles className="h-4 w-4" />
-                  Salvar e Analisar com IA
+                <Button 
+                  type="submit" 
+                  size="lg" 
+                  className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground h-14 text-lg font-semibold"
+                  disabled={isLoading}
+                >
+                  <Sparkles className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+                  {isLoading ? "Analisando com Gemini..." : "Salvar e Analisar com Gemini ✨"}
                 </Button>
               </form>
             </CardContent>

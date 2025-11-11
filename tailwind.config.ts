@@ -51,6 +51,11 @@ export default {
           bg: "hsl(var(--code-bg))",
           border: "hsl(var(--code-border))",
         },
+        aurora: {
+          blue: "hsl(var(--aurora-blue))",
+          purple: "hsl(var(--aurora-purple))",
+          green: "hsl(var(--aurora-green))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
